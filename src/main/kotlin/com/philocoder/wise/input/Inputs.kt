@@ -1,58 +1,43 @@
-package com.philocoder.martingalish.input
+package com.philocoder.wise.input
 
-import arrow.core.None
-import arrow.core.Option
-import arrow.core.Some
-import com.philocoder.martingalish.bet.BetResult.GainMoney
-import com.philocoder.martingalish.bet.BetResult.LoseMoney
+import java.io.File
+import java.io.FilenameFilter
 
-data class Inputs(val strategyInput: String,
-                  val odd: Double,
-                  val gainRatios: List<Double>,
-                  val lossRatio: Option<Double>,
-                  val actualBankroll: Option<Double>) {
+data class Inputs(val betDay: String,
+                  val folder: String,
+                  val betCounts: List<Int>,
+                  val filters: Map<String, Double>) {
 
     companion object {
         fun receive(): Inputs {
-            var strategyInput: String
-            do {
-                print("Enter your martingalish strategy (e.g: gggb or ggbl): ")
-                strategyInput = readLine()!!
-            } while (!InputValidator.isValidStrategyInput(strategyInput))
+            val folder = "/home/mert/Desktop/bet/"
 
-            var odd: Double
-            do {
-                print("Enter odd: ")
-                odd = readLine()!!.toDouble()
-            } while (!InputValidator.isValidOdd(odd))
+            printBetDays(folder) //30oct20, 2nov20, 7nov20
+            val betDay = "2nov20"
 
-            val gainRatios = arrayListOf<Double>()
-            val gainMoneyRepresentations = strategyInput.toCharArray().filter { it == GainMoney.representation }
-            if (gainMoneyRepresentations.size > 1) {
-                println("Enter gain ratio for each '${GainMoney.representation}'...")
-                gainMoneyRepresentations.drop(1)
-                        .forEachIndexed { i, _ ->
-                            print("Enter for ${i + 2}. '${GainMoney.representation}': ")
-                            gainRatios.add(readLine()!!.toDouble())
-                        }
-            }
+            /*print("Possible bet counts in coupon: ")
+            val betCounts = readLine()!!.run {
+                if (isNotEmpty()) this.split(',').map { it.toInt() }
+                else arrayListOf(2, 3, 4)
+            }*/
+            val betCounts = arrayListOf(2,3,4)
 
-            val lossRatio = if (strategyInput.contains(LoseMoney.representation)) {
-                print("Enter loss ratio: ")
-                Some(readLine()!!.toDouble())
-            } else None
+            val filters = mapOf("minOddFilter" to 2.0,
+                    "maxOddFilter" to 1.8,
+                    "minPossibilityFilter" to 0.7,
+                    "maxPossibilityFilter" to 0.80,
+                    "minQualityFilter" to 1.5,
+                    "maxQualityFilter" to 1.5)
 
-            print("Enter actual bankroll (press enter to skip): ")
-            val actualBankroll = readLine()!!.let {
-                if (it.isNotEmpty()) Some(it.toDouble()) else None
-            }
+            return Inputs(betDay, folder, betCounts, filters)
+        }
 
-            return Inputs(
-                    strategyInput = strategyInput,
-                    odd = odd,
-                    gainRatios = gainRatios,
-                    lossRatio = lossRatio,
-                    actualBankroll = actualBankroll)
+        private fun printBetDays(folder: String) {
+            val file = File(folder)
+            val filter = FilenameFilter { _: File, name: String -> name.endsWith(".csv") }
+            val csvList = file.list(filter).map { it.substring(0, it.length - 4) }
+            csvList.forEachIndexed { i, it -> println("${i + 1}) $it") }
+            println()
         }
     }
 }

@@ -1,8 +1,8 @@
 package com.philocoder.wise.coupon
 
-import com.philocoder.wise.BetCombination
-import com.philocoder.wise.Result
+import com.philocoder.wise.common.Result
 import com.philocoder.wise.bet.Bet
+import com.philocoder.wise.bet.BetCombination
 import com.philocoder.wise.util.round
 
 data class Coupon(val bets: List<Bet>,
@@ -19,8 +19,8 @@ data class Coupon(val bets: List<Bet>,
 
     companion object {
         fun from(combination: BetCombination): Coupon {
-            val reduced: Bet = combination.reduce { b1, b2 -> Bet(1, "", b1.odd * b2.odd, b1.possibility * b2.possibility, Result.combine(b1.result, b2.result)) }
-            return Coupon(combination, reduced.odd, reduced.possibility, reduced.result)
+            val reduced: Bet = combination.bets.reduce { b1, b2 -> Bet(1, "", b1.odd * b2.odd, b1.possibility * b2.possibility, Result.combine(b1.result, b2.result)) }
+            return Coupon(combination.bets, reduced.odd, reduced.possibility, reduced.result)
         }
     }
 }

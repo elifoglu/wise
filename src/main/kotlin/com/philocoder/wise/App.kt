@@ -1,60 +1,33 @@
 package com.philocoder.wise
 
-import com.philocoder.wise.Result.*
+import com.philocoder.wise.bet.BetCombination
+import com.philocoder.wise.bet.BetCombinator
+import com.philocoder.wise.bet.BetList
 import com.philocoder.wise.coupon.Coupon
-import com.philocoder.wise.io.BetDayPrinter
-import com.philocoder.wise.io.BetListReader
-import com.philocoder.wise.io.CouponPoolWriter
+import com.philocoder.wise.coupon.CouponPool
+import com.philocoder.wise.input.Inputs
 
 fun main() {
+    val inputs = Inputs.receive()
 
-    val folder = "/home/mert/Desktop/bet/"
-    BetDayPrinter.print(folder)
-
-    val betDay = "30oct20"
-    //betDay = "2nov20"
-    //betDay = "7nov20"
-
-    val filename = "$folder$betDay.csv"
-    val bets = BetListReader.readFromCSV(filename) //.also { it.forEach(::println) }
-
-    print("Possible bet counts in coupon: ")
-    val betCounts = readLine()!!.run {
-        if (isNotEmpty()) this.split(',').map { it.toInt() }
-        else arrayListOf(2, 3, 4)
+    val betList = BetList.readFromCSV(inputs.betDay, inputs.folder) //.also { it.forEach(::println) }
+    val combinations = BetCombinator.combine(betList.bets, inputs.betCounts)
+    val coupons = combinations.map { combination: BetCombination -> Coupon.from(combination) }
+    val couponPool = CouponPool(coupons).apply {
+        writeToFile(inputs.betDay, inputs.folder)
+        printStats("General stats of pool: ")
+        println()
     }
 
-    val combinations: List<BetCombination> = BetCombinator.generate(bets, betCounts)
-    val couponPool: List<Coupon> = combinations.map { combination: BetCombination -> Coupon.from(combination) }
-    CouponPoolWriter.write(couponPool, betDay, folder)
-
-    val minOddFilter = 2
-    val maxOddFilter = 1.8
-    val minPossibilityFilter = 0.74
-    val maxPossibilityFilter = 0.80
-    val minQualityFilter = 1.5
-    val maxQualityFilter = 1.5
-
-    val filteredCouponPool = couponPool
-            .filter { it.odd >= minOddFilter }
-            //.filter { it.odd <= maxOddFilter }
-            .filter { it.possibility >= minPossibilityFilter }
-            .filter { it.possibility <= maxPossibilityFilter }
-            //.filter { it.quality >= minQualityFilter }
-            //.filter { it.quality <= maxQualityFilter }
+    val filters = inputs.filters
+    couponPool.coupons
+            .filter { it.odd >= filters["minOddFilter"]!! }
+            //.filter { it.odd <= filters["maxOddFilter"]!! }
+            .filter { it.possibility >= filters["minPossibilityFilter"]!! }
+            //.filter { it.possibility <= filters["maxPossibilityFilter"]!! }
+            //.filter { it.quality >= filters["minQualityFilter"]!! }
+            //.filter { it.quality <= filters["maxQualityFilter"]!! }
             .sortedByDescending { it.quality }
-            .also { it.forEach(::println) }
-            .also { println("Average odd: " + it.sumByDouble { coupon -> coupon.odd } / it.count()) }
-            .also { println("Average possibility: " + it.sumByDouble { coupon -> coupon.possibility } / it.count()) }
-            .also { println("Average quality: " + it.sumByDouble { coupon -> coupon.quality } / it.count()) }
-
-    val couponsWon = filteredCouponPool.filter { it.result == win }.count()
-    val couponsLost = filteredCouponPool.filter { it.result == lose }.count()
-    val couponsIncomplete = filteredCouponPool.filter { it.result == incomplete }.count()
-    println("W: $couponsWon")
-    println("L: $couponsLost")
-    println("I: $couponsIncomplete")
-    if (couponsWon + couponsLost != 0) {
-        println("W/(W+L): ${couponsWon.toDouble() / (couponsWon + couponsLost)}")
-    }
+            //.also { it.forEach(::println) }
+            .also { CouponPool(it).printStats("Stats of filtered pool:") }
 }

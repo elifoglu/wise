@@ -1,4 +1,4 @@
-package com.philocoder.wise
+package com.philocoder.wise.common
 
 import java.lang.RuntimeException
 

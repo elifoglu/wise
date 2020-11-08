@@ -1,6 +1,6 @@
 package com.philocoder.wise.bet
 
-import com.philocoder.wise.Result
+import com.philocoder.wise.common.Result
 
 data class Bet(val index: Int,
                val game: String,
