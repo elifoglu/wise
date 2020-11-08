@@ -1,12 +1,13 @@
-package com.philocoder.wise.input
+package com.philocoder.wise.io
 
-import com.philocoder.wise.input.Result.WIN
+import com.philocoder.wise.Result
+import com.philocoder.wise.bet.Bet
 import java.io.BufferedReader
 import java.io.FileReader
 
-object CsvReader {
+object BetListReader {
 
-    fun readBetList(filename: String): List<Bet> {
+    fun readFromCSV(filename: String): List<Bet> {
         val reader = BufferedReader(FileReader(filename))
         var line: String
         val bets = arrayListOf<Bet>()
@@ -20,10 +21,11 @@ object CsvReader {
             if (line.isNotBlank()) {
                 val row: List<String> = line.split(",")
                 val index = row[0].toInt()
+                val game = row[1].trim()
                 val possibility = row[3].toDouble() / 100
                 val odd = row[4].toDouble()
                 val result = row[5]
-                val bet = Bet(index, odd, possibility, Result.from(result))
+                val bet = Bet(index, game, odd, possibility, Result.from(result))
                 bets.add(bet)
             }
         }

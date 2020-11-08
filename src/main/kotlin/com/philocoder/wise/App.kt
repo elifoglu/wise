@@ -1,53 +1,60 @@
 package com.philocoder.wise
 
-import com.philocoder.wise.input.Bet
-import com.philocoder.wise.input.Coupon
-import com.philocoder.wise.input.CsvReader
-import com.philocoder.wise.input.Result
-import com.philocoder.wise.input.Result.*
-import org.paukov.combinatorics3.Generator
-
+import com.philocoder.wise.Result.*
+import com.philocoder.wise.coupon.Coupon
+import com.philocoder.wise.io.BetDayPrinter
+import com.philocoder.wise.io.BetListReader
+import com.philocoder.wise.io.CouponPoolWriter
 
 fun main() {
-    val filename = "/home/mert/Desktop/bahis/nov2.csv"
-    val bets = CsvReader.readBetList(filename).also { it.forEach(::println) }
 
+    val folder = "/home/mert/Desktop/bet/"
+    BetDayPrinter.print(folder)
+
+    val betDay = "30oct20"
+    //betDay = "2nov20"
+    //betDay = "7nov20"
+
+    val filename = "$folder$betDay.csv"
+    val bets = BetListReader.readFromCSV(filename) //.also { it.forEach(::println) }
 
     print("Possible bet counts in coupon: ")
-    val betCounts: List<Int> = readLine()!!.split(',').map { it.toInt() }
-    val couponPool = arrayListOf<Coupon>()
-    betCounts.forEach { betCount ->
-        Generator.combination(bets.map { it.index }).simple(betCount).forEach { combination: MutableList<Int> ->
-            val members: List<Bet> = combination.map { betIndex -> bets.first { it.index == betIndex } }
-            val reduced: Bet = members.reduce { b1, b2 -> Bet(1, b1.odd * b2.odd, b1.possibility * b2.possibility, Result.reduce(b1.result, b2.result)) }
-            val coupon = Coupon(members, reduced.odd, reduced.possibility, reduced.result)
-            couponPool.add(coupon)
-        }
+    val betCounts = readLine()!!.run {
+        if (isNotEmpty()) this.split(',').map { it.toInt() }
+        else arrayListOf(2, 3, 4)
     }
 
+    val combinations: List<BetCombination> = BetCombinator.generate(bets, betCounts)
+    val couponPool: List<Coupon> = combinations.map { combination: BetCombination -> Coupon.from(combination) }
+    CouponPoolWriter.write(couponPool, betDay, folder)
 
-    val oddThresholdToPrintCoupon = 2
+    val minOddFilter = 2
+    val maxOddFilter = 1.8
+    val minPossibilityFilter = 0.74
+    val maxPossibilityFilter = 0.80
+    val minQualityFilter = 1.5
+    val maxQualityFilter = 1.5
 
-    couponPool.sortedByDescending { it.quality }
-            .filter { it.odd > oddThresholdToPrintCoupon }
-            .forEach {
-                println(it.toString())
-            }
-
-    val qualityThresholdToPrintCoupon = 1.5
-    val possibilityThresholdToPrintCoupon = 0.7
     val filteredCouponPool = couponPool
-            .filter { it.possibility > possibilityThresholdToPrintCoupon }
-            .filter { it.odd > oddThresholdToPrintCoupon }
+            .filter { it.odd >= minOddFilter }
+            //.filter { it.odd <= maxOddFilter }
+            .filter { it.possibility >= minPossibilityFilter }
+            .filter { it.possibility <= maxPossibilityFilter }
+            //.filter { it.quality >= minQualityFilter }
+            //.filter { it.quality <= maxQualityFilter }
+            .sortedByDescending { it.quality }
+            .also { it.forEach(::println) }
             .also { println("Average odd: " + it.sumByDouble { coupon -> coupon.odd } / it.count()) }
             .also { println("Average possibility: " + it.sumByDouble { coupon -> coupon.possibility } / it.count()) }
             .also { println("Average quality: " + it.sumByDouble { coupon -> coupon.quality } / it.count()) }
 
-    val couponsWon = filteredCouponPool.filter { it.result == WIN }.count()
-    val couponsLost = filteredCouponPool.filter { it.result == LOSE }.count()
-    val couponsIncomplete = filteredCouponPool.filter { it.result == INCOMPLETE }.count()
+    val couponsWon = filteredCouponPool.filter { it.result == win }.count()
+    val couponsLost = filteredCouponPool.filter { it.result == lose }.count()
+    val couponsIncomplete = filteredCouponPool.filter { it.result == incomplete }.count()
     println("W: $couponsWon")
     println("L: $couponsLost")
     println("I: $couponsIncomplete")
-    println("W/(W+L): ${couponsWon.toDouble() / (couponsWon + couponsLost)}")
+    if (couponsWon + couponsLost != 0) {
+        println("W/(W+L): ${couponsWon.toDouble() / (couponsWon + couponsLost)}")
+    }
 }

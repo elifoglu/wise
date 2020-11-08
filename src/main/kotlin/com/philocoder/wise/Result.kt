@@ -1,27 +1,27 @@
-package com.philocoder.wise.input
+package com.philocoder.wise
 
 import java.lang.RuntimeException
 
 enum class Result {
 
-    INCOMPLETE,
-    WIN,
-    LOSE;
+    win,
+    lose,
+    incomplete;
 
     companion object {
-        fun reduce(r1: Result, r2: Result): Result {
-            return if (r1 == LOSE || r2 == LOSE) LOSE
-            else if (r1 == INCOMPLETE || r2 == INCOMPLETE) INCOMPLETE
-            else WIN
-        }
-
         fun from(char: String): Result {
             return when (char) {
-                "?" -> INCOMPLETE
-                "+" -> WIN
-                "-" -> LOSE
+                "?" -> incomplete
+                "+" -> win
+                "-" -> lose
                 else -> throw RuntimeException()
             }
+        }
+
+        fun combine(r1: Result, r2: Result): Result {
+            return if (r1 == lose || r2 == lose) lose
+            else if (r1 == incomplete || r2 == incomplete) incomplete
+            else win
         }
     }
 }
