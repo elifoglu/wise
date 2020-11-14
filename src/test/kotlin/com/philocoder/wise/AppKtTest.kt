@@ -9,7 +9,7 @@ class AppKtTest {
 
     @Test
     fun `test`() {
-        val inputs = Inputs(betDay = "dayA", folder = csvFolderPath, betCounts = listOf(2, 3, 4), filters = mapOf())
+        val inputs = Inputs(betDay = "dayA", folder = csvFolderPath, betCounts = listOf(2, 3, 4), filters = emptyList())
         val output = Wise(inputs).calculate().output
         assertThat(output).isEqualTo(
                 """|General stats of pool: 

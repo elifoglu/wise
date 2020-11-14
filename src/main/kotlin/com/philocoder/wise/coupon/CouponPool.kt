@@ -38,15 +38,13 @@ data class CouponPool(val coupons: List<Coupon>) {
         |""".trimMargin()
     }
 
+    private fun filter(filter: CouponFilter): CouponPool {
+        return CouponPool(this.coupons.filter { filter.fn(it) })
+    }
+
     companion object {
-        fun filtered(coupons: List<Coupon>, filters: Map<String, Double>) = CouponPool(coupons)
-                //.filter { it.odd >= filters["minOddFilter"]!! }
-                //.filter { it.odd <= filters["maxOddFilter"]!! }
-                //.filter { it.possibility >= filters["minPossibilityFilter"]!! }
-                //.filter { it.possibility <= filters["maxPossibilityFilter"]!! }
-                //.filter { it.quality >= filters["minQualityFilter"]!! }
-                //.filter { it.quality <= filters["maxQualityFilter"]!! })
-        //.sortedByDescending { it.quality }
-        //.also { it.forEach(::println) }
+        fun filtered(coupons: List<Coupon>, filters: List<CouponFilter>): CouponPool {
+            return filters.foldRight(CouponPool(coupons), { filter: CouponFilter, acc: CouponPool -> acc.filter(filter) })
+        }
     }
 }

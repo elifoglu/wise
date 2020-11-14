@@ -24,6 +24,8 @@ class Wise(val inputs: Inputs) {
         CouponPool.filtered(coupons, inputs.filters).apply {
             output += getStats("Stats of filtered pool:")
         }
+        //.sortedByDescending { it.quality }
+        //.also { it.forEach(::println) }
         return this
     }
 

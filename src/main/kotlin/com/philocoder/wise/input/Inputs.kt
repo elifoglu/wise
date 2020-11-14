@@ -1,12 +1,15 @@
 package com.philocoder.wise.input
 
+import com.philocoder.wise.coupon.Coupon
+import com.philocoder.wise.coupon.CouponFilter
+import com.philocoder.wise.coupon.CouponPool
 import java.io.File
 import java.io.FilenameFilter
 
 data class Inputs(val betDay: String,
                   val folder: String,
                   val betCounts: List<Int>,
-                  val filters: Map<String, Double>) {
+                  val filters: List<CouponFilter>) {
 
     companion object {
         fun receive(): Inputs {
@@ -23,13 +26,13 @@ data class Inputs(val betDay: String,
             }*/
             val betCounts = arrayListOf(2, 3, 4)
 
-            val filters = mapOf(
-                    "minOddFilter" to 2.0,
-                    "maxOddFilter" to 1.8,
-                    "minPossibilityFilter" to 0.7,
-                    "maxPossibilityFilter" to 0.8,
-                    "minQualityFilter" to 1.5,
-                    "maxQualityFilter" to 1.5)
+            val filters = arrayListOf(
+                    CouponFilter("minOddFilter") { it.odd >= 1.8 },
+                    CouponFilter("maxOddFilter") { it.odd <= 2.0 },
+                    CouponFilter("minPossibilityFilter") { it.possibility >= 0.7 },
+                    CouponFilter("maxPossibilityFilter") { it.possibility <= 0.8 },
+                    CouponFilter("minQualityFilter") { it.quality >= 1.5 },
+                    CouponFilter("maxQualityFilter") { it.quality <= 1.5 })
 
             return Inputs(betDay, folder, betCounts, filters)
         }
