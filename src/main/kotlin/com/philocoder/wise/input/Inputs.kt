@@ -13,19 +13,22 @@ data class Inputs(val betDay: String,
             val folder = "/home/mert/Desktop/bet/"
 
             printBetDays(folder) //30oct20, 2nov20, 7nov20
-            val betDay = "2nov20"
+            val betDay = "7nov20"
+            println("Selected bet day: $betDay")
+            println()
 
             /*print("Possible bet counts in coupon: ")
             val betCounts = readLine()!!.run {
                 if (isNotEmpty()) this.split(',').map { it.toInt() }
                 else arrayListOf(2, 3, 4)
             }*/
-            val betCounts = arrayListOf(2,3,4)
+            val betCounts = arrayListOf(2, 3, 4)
 
-            val filters = mapOf("minOddFilter" to 2.0,
+            val filters = mapOf(
+                    "minOddFilter" to 2.0,
                     "maxOddFilter" to 1.8,
                     "minPossibilityFilter" to 0.7,
-                    "maxPossibilityFilter" to 0.80,
+                    "maxPossibilityFilter" to 0.8,
                     "minQualityFilter" to 1.5,
                     "maxQualityFilter" to 1.5)
 
