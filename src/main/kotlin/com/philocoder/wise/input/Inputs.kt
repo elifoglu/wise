@@ -11,7 +11,6 @@ data class Inputs(val betDay: String,
     companion object {
         fun receive(): Inputs {
             val folder = "/home/mert/Desktop/bet/"
-
             printBetDays(folder) //30oct20, 2nov20, 7nov20
             val betDay = "7nov20"
             println("Selected bet day: $betDay")
