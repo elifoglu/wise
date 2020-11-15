@@ -18,7 +18,7 @@ class AppKtTest {
                 couponFilters = emptyList()
         )
         val output = Wise(inputs).calculate().output
-        assertThat(output).contains("General stats of pool: 0.25 1/4 avg[odd1.66 poss0.8 qua1.31] ?0")
+        assertThat(output).contains("Stats of pool: 0.25 1/4 avg[odd1.66 poss0.8 qua1.31] ?0")
     }
 
     @Test
@@ -31,7 +31,7 @@ class AppKtTest {
                 couponFilters = emptyList()
         )
         val output = Wise(inputs).calculate().output
-        assertThat(output).contains("General stats of pool: 0.0 0/1 avg[odd1.69 poss0.79 qua1.34] ?0")
+        assertThat(output).contains("Stats of pool: 0.0 0/1 avg[odd1.69 poss0.79 qua1.34] ?0")
     }
 
     @Test
@@ -57,6 +57,6 @@ class AppKtTest {
                 couponFilters = emptyList()
         )
         val output = Wise(inputs).calculate().output
-        assertThat(output).contains("General stats of pool: 1.0 2/2 avg[odd1.75 poss0.74 qua1.29] ?0")
+        assertThat(output).contains("Stats of pool: 1.0 2/2 avg[odd1.75 poss0.74 qua1.29] ?0")
     }
 }

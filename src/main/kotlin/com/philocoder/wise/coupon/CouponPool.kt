@@ -22,13 +22,11 @@ data class CouponPool(val coupons: List<Coupon>) {
         val couponsWon = coupons.filter { it.result == Result.win }.count()
         val couponsLost = coupons.filter { it.result == Result.lose }.count()
         val couponsIncomplete = coupons.filter { it.result == Result.incomplete }.count()
-        val winRatio = if (couponsWon + couponsLost != 0) {
-            (couponsWon.toDouble() / (couponsWon + couponsLost)).round(3).toString()
-        } else "?"
+        val winRatio = if (couponsWon + couponsLost != 0) (couponsWon.toDouble() / (couponsWon + couponsLost)).round(2).toString() else "?"
         val avgOdd = (coupons.sumByDouble { coupon -> coupon.odd } / coupons.count()).round(2)
         val avgPossibility = (coupons.sumByDouble { coupon -> coupon.possibility } / coupons.count()).round(2)
         val avgQuality = (coupons.sumByDouble { coupon -> coupon.quality } / coupons.count()).round(2)
-        return "$header $winRatio ${couponsWon}/${couponsWon+couponsLost} avg[odd${avgOdd} poss${avgPossibility} qua${avgQuality}] ?${couponsIncomplete}"
+        return "$header $winRatio ${couponsWon}/${couponsWon + couponsLost} avg[odd${avgOdd} poss${avgPossibility} qua${avgQuality}] ?${couponsIncomplete}"
     }
 
     companion object {

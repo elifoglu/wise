@@ -18,7 +18,6 @@ data class Inputs(val betDay: String,
             printBetDays(folder) //30oct20, 2nov20, 7nov20
             val betDay = "7nov20"
             println("Selected bet day: $betDay")
-            println()
 
             /*print("Possible bet counts in coupon: ")
             val betCounts = readLine()!!.run {
@@ -28,7 +27,7 @@ data class Inputs(val betDay: String,
             val betCounts = arrayListOf(2, 3, 4)
 
             val betFilters = arrayListOf<Filter<Bet>>(
-                    Filter("minPossibilityFilter") { it.possibility >= 0.85 }
+                    Filter("minPossibilityFilter") { it.possibility >= 0.8 }
             )
 
             val couponFilters = arrayListOf<Filter<Coupon>>(
