@@ -1,15 +1,16 @@
 package com.philocoder.wise.input
 
+import com.philocoder.wise.bet.Bet
 import com.philocoder.wise.coupon.Coupon
-import com.philocoder.wise.coupon.CouponFilter
-import com.philocoder.wise.coupon.CouponPool
+import com.philocoder.wise.common.Filter
 import java.io.File
 import java.io.FilenameFilter
 
 data class Inputs(val betDay: String,
                   val folder: String,
                   val betCounts: List<Int>,
-                  val filters: List<CouponFilter>) {
+                  val betFilters: List<Filter<Bet>>,
+                  val couponFilters: List<Filter<Coupon>>) {
 
     companion object {
         fun receive(): Inputs {
@@ -26,15 +27,19 @@ data class Inputs(val betDay: String,
             }*/
             val betCounts = arrayListOf(2, 3, 4)
 
-            val filters = arrayListOf(
-                    CouponFilter("minOddFilter") { it.odd >= 1.8 },
-                    CouponFilter("maxOddFilter") { it.odd <= 2.0 },
-                    CouponFilter("minPossibilityFilter") { it.possibility >= 0.7 },
-                    CouponFilter("maxPossibilityFilter") { it.possibility <= 0.8 },
-                    CouponFilter("minQualityFilter") { it.quality >= 1.5 },
-                    CouponFilter("maxQualityFilter") { it.quality <= 1.5 })
+            val betFilters = arrayListOf<Filter<Bet>>(
+                    Filter("minPossibilityFilter") { it.possibility >= 0.83 }
+            )
 
-            return Inputs(betDay, folder, betCounts, filters)
+            val couponFilters = arrayListOf<Filter<Coupon>>(
+                    Filter("minOddFilter") { it.odd >= 1.8 },
+                    Filter("maxOddFilter") { it.odd <= 2.0 },
+                    Filter("minPossibilityFilter") { it.possibility >= 0.7 },
+                    Filter("maxPossibilityFilter") { it.possibility <= 0.8 },
+                    Filter("minQualityFilter") { it.quality >= 0.5 },
+                    Filter("maxQualityFilter") { it.quality <= 2.7 })
+
+            return Inputs(betDay, folder, betCounts, betFilters, couponFilters)
         }
 
         private fun printBetDays(folder: String) {

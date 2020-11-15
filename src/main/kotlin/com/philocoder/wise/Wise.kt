@@ -13,7 +13,7 @@ class Wise(val inputs: Inputs) {
     var output: String = ""
 
     fun calculate(): Wise {
-        val betList = BetList.readFromCSV(inputs.betDay, inputs.folder) //.also { it.forEach(::println) }
+        val betList = BetList.readFromCSV(inputs.betDay, inputs.folder).filter(inputs.betFilters)
         val combinations = BetCombinator.combine(betList.bets, inputs.betCounts)
         val coupons = combinations.map { combination: BetCombination -> Coupon.from(combination) }
         CouponPool(coupons).apply {
@@ -21,7 +21,7 @@ class Wise(val inputs: Inputs) {
             output += getStats("General stats of pool: ")
         }
         output += newLine
-        CouponPool.filtered(coupons, inputs.filters).apply {
+        CouponPool.filtered(coupons, inputs.couponFilters).apply {
             output += getStats("Stats of filtered pool:")
         }
         //.sortedByDescending { it.quality }

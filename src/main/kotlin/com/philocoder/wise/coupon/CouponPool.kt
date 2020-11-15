@@ -1,5 +1,6 @@
 package com.philocoder.wise.coupon
 
+import com.philocoder.wise.common.Filter
 import com.philocoder.wise.common.Result
 import com.philocoder.wise.util.round
 import java.io.File
@@ -38,13 +39,9 @@ data class CouponPool(val coupons: List<Coupon>) {
         |""".trimMargin()
     }
 
-    private fun filter(filter: CouponFilter): CouponPool {
-        return CouponPool(this.coupons.filter { filter.fn(it) })
-    }
-
     companion object {
-        fun filtered(coupons: List<Coupon>, filters: List<CouponFilter>): CouponPool {
-            return filters.foldRight(CouponPool(coupons), { filter: CouponFilter, acc: CouponPool -> acc.filter(filter) })
+        fun filtered(coupons: List<Coupon>, filters: List<Filter<Coupon>>): CouponPool {
+            return CouponPool(filters.foldRight(coupons, { filter: Filter<Coupon>, acc: List<Coupon> -> acc.filter(filter.fn) }))
         }
     }
 }

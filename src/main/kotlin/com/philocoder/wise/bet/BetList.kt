@@ -1,10 +1,15 @@
 package com.philocoder.wise.bet
 
+import com.philocoder.wise.common.Filter
 import com.philocoder.wise.common.Result
 import java.io.BufferedReader
 import java.io.FileReader
 
 data class BetList(val bets: List<Bet>) {
+
+    fun filter(filters: List<Filter<Bet>>): BetList {
+        return BetList(filters.foldRight(bets, { filter: Filter<Bet>, bets: List<Bet> -> bets.filter(filter.fn) }))
+    }
 
     companion object {
         fun readFromCSV(betDay: String, folder: String): BetList {
