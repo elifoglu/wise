@@ -1,5 +1,6 @@
 package com.philocoder.wise
 
+import com.philocoder.wise.coupon.Coupon
 import com.philocoder.wise.input.Inputs
 
 fun main() {
@@ -9,4 +10,5 @@ fun main() {
             .writeToFile()
     Wise.of(inputs)
             .printOutput()
+            .printPoolSortedBy(Coupon::quality, 5)
 }

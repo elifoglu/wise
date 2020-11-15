@@ -1,10 +1,13 @@
 package com.philocoder.wise
 
 import com.philocoder.wise.common.Filter
+import com.philocoder.wise.coupon.Coupon
 import com.philocoder.wise.input.Inputs
 import com.philocoder.wise.test_util.Helper.csvFolderPath
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 
 class AppKtTest {
 
@@ -84,5 +87,74 @@ class AppKtTest {
         )
         val output = Wise.of(inputs).output
         assertThat(output).contains("Stats of pool: 1.0 2/2 avg[odd1.75 poss0.74 qua1.29] ?0")
+    }
+
+    @Test
+    fun `it should sort coupon pool by odd`() {
+        val standartOut = System.out
+        val outputStreamCaptor = ByteArrayOutputStream()
+        System.setOut(PrintStream(outputStreamCaptor))
+
+        val inputs = Inputs(
+                betDay = "dayA",
+                folder = csvFolderPath,
+                betCounts = listOf(2, 3, 4),
+                betFilters = emptyList(),
+                couponFilters = emptyList()
+        )
+        Wise.of(inputs).printPoolSortedBy(Coupon::odd, 3)
+        assertThat(outputStreamCaptor.toString()).isEqualTo("""
+            |bets=[1, 2, 3], odd=1.944, possibility=0.735, quality=1.44, result=lose
+            |bets=[1, 2], odd=1.69, possibility=0.79, quality=1.34, result=lose
+            |bets=[1, 3], odd=1.495, possibility=0.79, quality=1.18, result=win
+            |""".trimMargin())
+
+        System.setOut(standartOut)
+    }
+
+    @Test
+    fun `it should sort coupon pool by possibility`() {
+        val standartOut = System.out
+        val outputStreamCaptor = ByteArrayOutputStream()
+        System.setOut(PrintStream(outputStreamCaptor))
+
+        val inputs = Inputs(
+                betDay = "dayA",
+                folder = csvFolderPath,
+                betCounts = listOf(2, 3, 4),
+                betFilters = emptyList(),
+                couponFilters = emptyList()
+        )
+        Wise.of(inputs).printPoolSortedBy(Coupon::possibility, 3)
+        assertThat(outputStreamCaptor.toString()).isEqualTo("""
+            |bets=[2, 3], odd=1.495, possibility=0.865, quality=1.28, result=lose
+            |bets=[1, 2], odd=1.69, possibility=0.79, quality=1.34, result=lose
+            |bets=[1, 3], odd=1.495, possibility=0.79, quality=1.18, result=win
+            |""".trimMargin())
+
+        System.setOut(standartOut)
+    }
+
+    @Test
+    fun `it should sort coupon pool by quality`() {
+        val standartOut = System.out
+        val outputStreamCaptor = ByteArrayOutputStream()
+        System.setOut(PrintStream(outputStreamCaptor))
+
+        val inputs = Inputs(
+                betDay = "dayA",
+                folder = csvFolderPath,
+                betCounts = listOf(2, 3, 4),
+                betFilters = emptyList(),
+                couponFilters = emptyList()
+        )
+        Wise.of(inputs).printPoolSortedBy(Coupon::quality, 3)
+        assertThat(outputStreamCaptor.toString()).isEqualTo("""
+            |bets=[1, 2, 3], odd=1.944, possibility=0.735, quality=1.44, result=lose
+            |bets=[1, 2], odd=1.69, possibility=0.79, quality=1.34, result=lose
+            |bets=[2, 3], odd=1.495, possibility=0.865, quality=1.28, result=lose
+            |""".trimMargin())
+
+        System.setOut(standartOut)
     }
 }

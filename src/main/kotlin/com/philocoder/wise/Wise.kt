@@ -16,9 +16,10 @@ class Wise(private val inputs: Inputs, betList: BetList, private val couponPool:
 
     fun printOutput() = apply { println(output) }
     fun writeToFile() = apply { couponPool.writeToFile(inputs.betDay, inputs.folder) }
-
-    //.sortedByDescending { it.quality }
-    //.also { it.forEach(::println) }
+    fun printPoolSortedBy(selector: (Coupon) -> Double, n: Int) = couponPool.coupons
+            .sortedByDescending(selector)
+            .take(n)
+            .forEach(::println)
 
     companion object {
         fun of(inputs: Inputs): Wise {
