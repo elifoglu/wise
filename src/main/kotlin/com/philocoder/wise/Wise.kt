@@ -6,35 +6,27 @@ import com.philocoder.wise.bet.BetList
 import com.philocoder.wise.coupon.Coupon
 import com.philocoder.wise.coupon.CouponPool
 import com.philocoder.wise.input.Inputs
-import com.philocoder.wise.util.emptyString
-import com.philocoder.wise.util.newLine
 
-class Wise(val inputs: Inputs) {
+class Wise(private val inputs: Inputs, betList: BetList, private val couponPool: CouponPool) {
 
-    var output: String = emptyString
+    val output = """
+        |${betList.getStats("Stats of bets:")}
+        |${couponPool.getStats(if (inputs.couponFilters.isEmpty()) "Stats of pool:" else "Stats of filtered pool:")}
+        """.trimMargin()
 
-    fun calculate(): Wise {
-        val betList = BetList.readFromCSV(inputs.betDay, inputs.folder)
-                .filter(inputs.betFilters)
-                .apply { output += getStats("Stats of bets:") }
-        output += newLine
-        val combinations = BetCombinator.combine(betList.bets, inputs.betCounts)
-        val coupons = combinations.map { combination: BetCombination -> Coupon.from(combination) }
-        CouponPool(coupons).apply {
-            writeToFile(inputs.betDay, inputs.folder)
-            output += getStats("Stats of pool:")
+    fun printOutput() = apply { println(output) }
+    fun writeToFile() = apply { couponPool.writeToFile(inputs.betDay, inputs.folder) }
+
+    //.sortedByDescending { it.quality }
+    //.also { it.forEach(::println) }
+
+    companion object {
+        fun of(inputs: Inputs): Wise {
+            val betList = BetList.readFromCSV(inputs.betDay, inputs.folder).filter(inputs.betFilters)
+            val combinations = BetCombinator.combine(betList.bets, inputs.betCounts)
+            val coupons = combinations.map { combination: BetCombination -> Coupon.from(combination) }
+            val couponPool = CouponPool.filtered(coupons, inputs.couponFilters)
+            return Wise(inputs, betList, couponPool)
         }
-        output += newLine
-        CouponPool.filtered(coupons, inputs.couponFilters).apply {
-            output += getStats("Stats of filtered pool:")
-        }
-        //.sortedByDescending { it.quality }
-        //.also { it.forEach(::println) }
-        return this
-    }
-
-    fun printOutput(): Wise {
-        println(output)
-        return this
     }
 }

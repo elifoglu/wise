@@ -17,7 +17,7 @@ class AppKtTest {
                 betFilters = emptyList(),
                 couponFilters = emptyList()
         )
-        val output = Wise(inputs).calculate().output
+        val output = Wise.of(inputs).output
         assertThat(output).contains("Stats of bets: 0.67 2/3 avg[odd1.25 poss0.9 qua1.13] ?0")
     }
 
@@ -30,7 +30,7 @@ class AppKtTest {
                 betFilters = arrayListOf(Filter("minOddFilter") { it.odd > 1.2 }),
                 couponFilters = emptyList()
         )
-        val output = Wise(inputs).calculate().output
+        val output = Wise.of(inputs).output
         assertThat(output).contains("Stats of bets: 0.5 1/2 avg[odd1.3 poss0.89 qua1.16] ?0")
     }
 
@@ -43,7 +43,7 @@ class AppKtTest {
                 betFilters = emptyList(),
                 couponFilters = emptyList()
         )
-        val output = Wise(inputs).calculate().output
+        val output = Wise.of(inputs).output
         assertThat(output).contains("Stats of pool: 0.25 1/4 avg[odd1.66 poss0.8 qua1.31] ?0")
     }
 
@@ -56,7 +56,7 @@ class AppKtTest {
                 betFilters = arrayListOf(Filter("minOddFilter") { it.odd > 1.2 }),
                 couponFilters = emptyList()
         )
-        val output = Wise(inputs).calculate().output
+        val output = Wise.of(inputs).output
         assertThat(output).contains("Stats of pool: 0.0 0/1 avg[odd1.69 poss0.79 qua1.34] ?0")
     }
 
@@ -69,7 +69,7 @@ class AppKtTest {
                 betFilters = emptyList(),
                 couponFilters = arrayListOf(Filter("minOddFilter") { it.odd > 1.6 })
         )
-        val output = Wise(inputs).calculate().output
+        val output = Wise.of(inputs).output
         assertThat(output).contains("Stats of filtered pool: 0.0 0/2 avg[odd1.82 poss0.76 qua1.39] ?0")
     }
 
@@ -82,7 +82,7 @@ class AppKtTest {
                 betFilters = emptyList(),
                 couponFilters = emptyList()
         )
-        val output = Wise(inputs).calculate().output
+        val output = Wise.of(inputs).output
         assertThat(output).contains("Stats of pool: 1.0 2/2 avg[odd1.75 poss0.74 qua1.29] ?0")
     }
 }
