@@ -35,7 +35,7 @@ data class CouponPool(val coupons: List<Coupon>) {
         |W/(W+L): $winRatio
         |avg odd: $avgOdd
         |avg possibility: $avgPossibility
-        |avg quality = $avgQuality
+        |avg quality: $avgQuality
         |""".trimMargin()
     }
 
