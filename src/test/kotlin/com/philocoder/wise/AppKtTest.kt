@@ -9,7 +9,33 @@ import org.junit.jupiter.api.Test
 class AppKtTest {
 
     @Test
-    fun `it should build output correctly without any filters`() {
+    fun `it should build bet list stats output correctly without any filters`() {
+        val inputs = Inputs(
+                betDay = "dayA",
+                folder = csvFolderPath,
+                betCounts = listOf(2, 3, 4),
+                betFilters = emptyList(),
+                couponFilters = emptyList()
+        )
+        val output = Wise(inputs).calculate().output
+        assertThat(output).contains("Stats of bets: 0.67 2/3 avg[odd1.25 poss0.9 qua1.13] ?0")
+    }
+
+    @Test
+    fun `it should build bet list stats output correctly with bet filtering`() {
+        val inputs = Inputs(
+                betDay = "dayA",
+                folder = csvFolderPath,
+                betCounts = listOf(2, 3, 4),
+                betFilters = arrayListOf(Filter("minOddFilter") { it.odd > 1.2 }),
+                couponFilters = emptyList()
+        )
+        val output = Wise(inputs).calculate().output
+        assertThat(output).contains("Stats of bets: 0.5 1/2 avg[odd1.3 poss0.89 qua1.16] ?0")
+    }
+
+    @Test
+    fun `it should build coupon pool stats output correctly without any filters`() {
         val inputs = Inputs(
                 betDay = "dayA",
                 folder = csvFolderPath,
@@ -22,7 +48,7 @@ class AppKtTest {
     }
 
     @Test
-    fun `it should filter bets`() {
+    fun `it should build coupon pool stats output correctly with bet filtering`() {
         val inputs = Inputs(
                 betDay = "dayA",
                 folder = csvFolderPath,
