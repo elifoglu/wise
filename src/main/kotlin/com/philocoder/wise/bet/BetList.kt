@@ -14,13 +14,13 @@ data class BetList(val bets: List<Bet>) {
 
     fun getStats(header: String): String {
         val betsWon = bets.filter { it.result == Result.win }.count()
-        val betsLost = bets.filter { it.result == Result.lose }.count()
+        val betsWonAndLost = bets.filter { it.result == Result.lose }.count() + betsWon
         val betsIncomplete = bets.filter { it.result == Result.incomplete }.count()
-        val winRatio = if (betsWon + betsLost != 0) (betsWon.toDouble() / (betsWon + betsLost)).round(2).toString() else "?"
+        val winRatio = if (betsWonAndLost != 0) (betsWon.toDouble() / betsWonAndLost).round(2).toString() else "?"
         val avgOdd = (bets.sumByDouble { bet -> bet.odd } / bets.count()).round(2)
         val avgPossibility = (bets.sumByDouble { bet -> bet.possibility } / bets.count()).round(2)
         val avgQuality = (bets.sumByDouble { bet -> bet.quality } / bets.count()).round(2)
-        return "$header $winRatio ${betsWon}/${betsWon + betsLost} avg[odd${avgOdd} poss${avgPossibility} qua${avgQuality}] ?${betsIncomplete}"
+        return "$header $winRatio ${betsWon}/$betsWonAndLost avg[odd${avgOdd} poss${avgPossibility} qua${avgQuality}] ?${betsIncomplete}"
     }
 
     companion object {

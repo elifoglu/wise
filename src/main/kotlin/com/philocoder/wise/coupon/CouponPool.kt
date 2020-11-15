@@ -20,13 +20,13 @@ data class CouponPool(val coupons: List<Coupon>) {
 
     fun getStats(header: String): String {
         val couponsWon = coupons.filter { it.result == Result.win }.count()
-        val couponsLost = coupons.filter { it.result == Result.lose }.count()
+        val couponsWonAndLost = coupons.filter { it.result == Result.lose }.count() + couponsWon
         val couponsIncomplete = coupons.filter { it.result == Result.incomplete }.count()
-        val winRatio = if (couponsWon + couponsLost != 0) (couponsWon.toDouble() / (couponsWon + couponsLost)).round(2).toString() else "?"
+        val winRatio = if (couponsWonAndLost != 0) (couponsWon.toDouble() / couponsWonAndLost).round(2).toString() else "?"
         val avgOdd = (coupons.sumByDouble { coupon -> coupon.odd } / coupons.count()).round(2)
         val avgPossibility = (coupons.sumByDouble { coupon -> coupon.possibility } / coupons.count()).round(2)
         val avgQuality = (coupons.sumByDouble { coupon -> coupon.quality } / coupons.count()).round(2)
-        return "$header $winRatio ${couponsWon}/${couponsWon + couponsLost} avg[odd${avgOdd} poss${avgPossibility} qua${avgQuality}] ?${couponsIncomplete}"
+        return "$header $winRatio ${couponsWon}/$couponsWonAndLost avg[odd${avgOdd} poss${avgPossibility} qua${avgQuality}] ?${couponsIncomplete}"
     }
 
     companion object {
