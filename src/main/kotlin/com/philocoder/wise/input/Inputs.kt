@@ -28,16 +28,17 @@ data class Inputs(val betDay: String,
             val betCounts = arrayListOf(2, 3, 4)
 
             val betFilters = arrayListOf<Filter<Bet>>(
-                    Filter("minPossibilityFilter") { it.possibility >= 0.83 }
+                    Filter("minPossibilityFilter") { it.possibility >= 0.85 }
             )
 
             val couponFilters = arrayListOf<Filter<Coupon>>(
                     Filter("minOddFilter") { it.odd >= 1.8 },
-                    Filter("maxOddFilter") { it.odd <= 2.0 },
+                    //Filter("maxOddFilter") { it.odd <= 2.0 },
                     Filter("minPossibilityFilter") { it.possibility >= 0.7 },
-                    Filter("maxPossibilityFilter") { it.possibility <= 0.8 },
-                    Filter("minQualityFilter") { it.quality >= 0.5 },
-                    Filter("maxQualityFilter") { it.quality <= 2.7 })
+                    //Filter("maxPossibilityFilter") { it.possibility <= 0.8 },
+                    //Filter("minQualityFilter") { it.quality >= 0.5 },
+                    //Filter("maxQualityFilter") { it.quality <= 2.7 },
+            )
 
             return Inputs(betDay, folder, betCounts, betFilters, couponFilters)
         }

@@ -18,17 +18,7 @@ class AppKtTest {
                 couponFilters = emptyList()
         )
         val output = Wise(inputs).calculate().output
-        assertThat(output).contains(
-                """|General stats of pool: 
-                |W: 1
-                |L: 3
-                |I: 0
-                |W/(W+L): 0.25
-                |avg odd: 1.656
-                |avg possibility: 0.795
-                |avg quality: 1.307
-                |""".trimMargin()
-        )
+        assertThat(output).contains("General stats of pool: 0.25 1/4 avg[odd1.66 poss0.8 qua1.31] ?0")
     }
 
     @Test
@@ -41,16 +31,7 @@ class AppKtTest {
                 couponFilters = emptyList()
         )
         val output = Wise(inputs).calculate().output
-        assertThat(output).contains(
-                """|General stats of pool: 
-                |W: 0
-                |L: 1
-                |I: 0
-                |W/(W+L): 0.0
-                |avg odd: 1.69
-                |avg possibility: 0.79
-                |avg quality: 1.335""".trimMargin()
-        )
+        assertThat(output).contains("General stats of pool: 0.0 0/1 avg[odd1.69 poss0.79 qua1.34] ?0")
     }
 
     @Test
@@ -63,16 +44,7 @@ class AppKtTest {
                 couponFilters = arrayListOf(Filter("minOddFilter") { it.odd > 1.6 })
         )
         val output = Wise(inputs).calculate().output
-        assertThat(output).contains(
-                """|Stats of filtered pool:
-                |W: 0
-                |L: 2
-                |I: 0
-                |W/(W+L): 0.0
-                |avg odd: 1.817
-                |avg possibility: 0.763
-                |avg quality: 1.385""".trimMargin()
-        )
+        assertThat(output).contains("Stats of filtered pool: 0.0 0/2 avg[odd1.82 poss0.76 qua1.39] ?0")
     }
 
     @Test
@@ -85,15 +57,6 @@ class AppKtTest {
                 couponFilters = emptyList()
         )
         val output = Wise(inputs).calculate().output
-        assertThat(output).contains(
-                """|General stats of pool: 
-                |W: 2
-                |L: 0
-                |I: 0
-                |W/(W+L): 1.0
-                |avg odd: 1.754
-                |avg possibility: 0.744
-                |avg quality: 1.292""".trimMargin()
-        )
+        assertThat(output).contains("General stats of pool: 1.0 2/2 avg[odd1.75 poss0.74 qua1.29] ?0")
     }
 }

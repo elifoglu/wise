@@ -18,7 +18,7 @@ class Wise(val inputs: Inputs) {
         val coupons = combinations.map { combination: BetCombination -> Coupon.from(combination) }
         CouponPool(coupons).apply {
             writeToFile(inputs.betDay, inputs.folder)
-            output += getStats("General stats of pool: ")
+            output += getStats("General stats of pool:")
         }
         output += newLine
         CouponPool.filtered(coupons, inputs.couponFilters).apply {
