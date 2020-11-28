@@ -6,6 +6,7 @@ import com.philocoder.wise.bet.BetList
 import com.philocoder.wise.coupon.Coupon
 import com.philocoder.wise.coupon.CouponPool
 import com.philocoder.wise.input.Inputs
+import com.philocoder.wise.input.Sorter
 
 class Wise(private val inputs: Inputs, betList: BetList, private val couponPool: CouponPool) {
 
@@ -16,9 +17,9 @@ class Wise(private val inputs: Inputs, betList: BetList, private val couponPool:
 
     fun printOutput() = apply { println(output) }
     fun writeToFile() = apply { couponPool.writeToFile(inputs.betDay, inputs.folder) }
-    fun printPoolSortedBy(selector: (Coupon) -> Double, n: Int) = couponPool.coupons
-            .sortedByDescending(selector)
-            .take(n)
+    fun printPoolSortedBy(sorter: Sorter) = couponPool.coupons
+            .sortedByDescending(sorter.fn)
+            .take(sorter.n)
             .forEach(::println)
 
     companion object {

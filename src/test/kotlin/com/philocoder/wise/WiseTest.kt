@@ -3,6 +3,7 @@ package com.philocoder.wise
 import com.philocoder.wise.common.Filter
 import com.philocoder.wise.coupon.Coupon
 import com.philocoder.wise.input.Inputs
+import com.philocoder.wise.input.Sorter
 import com.philocoder.wise.test_util.Helper
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -102,7 +103,7 @@ class WiseTest {
                 betFilters = emptyList(),
                 couponFilters = emptyList()
         )
-        Wise.of(inputs).printPoolSortedBy(Coupon::odd, 3)
+        Wise.of(inputs).printPoolSortedBy(Sorter(Coupon::odd, 3))
         Assertions.assertThat(outputStreamCaptor.toString()).isEqualTo("""
             |bets=[1, 2, 3], odd=1.944, possibility=0.735, quality=1.44, result=lose
             |bets=[1, 2], odd=1.69, possibility=0.79, quality=1.34, result=lose
@@ -125,7 +126,7 @@ class WiseTest {
                 betFilters = emptyList(),
                 couponFilters = emptyList()
         )
-        Wise.of(inputs).printPoolSortedBy(Coupon::possibility, 3)
+        Wise.of(inputs).printPoolSortedBy(Sorter(Coupon::possibility, 3))
         Assertions.assertThat(outputStreamCaptor.toString()).isEqualTo("""
             |bets=[2, 3], odd=1.495, possibility=0.865, quality=1.28, result=lose
             |bets=[1, 2], odd=1.69, possibility=0.79, quality=1.34, result=lose
@@ -148,7 +149,7 @@ class WiseTest {
                 betFilters = emptyList(),
                 couponFilters = emptyList()
         )
-        Wise.of(inputs).printPoolSortedBy(Coupon::quality, 3)
+        Wise.of(inputs).printPoolSortedBy(Sorter(Coupon::quality, 3))
         Assertions.assertThat(outputStreamCaptor.toString()).isEqualTo("""
             |bets=[1, 2, 3], odd=1.944, possibility=0.735, quality=1.44, result=lose
             |bets=[1, 2], odd=1.69, possibility=0.79, quality=1.34, result=lose

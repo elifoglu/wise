@@ -1,6 +1,5 @@
 package com.philocoder.wise
 
-import com.philocoder.wise.coupon.Coupon
 import com.philocoder.wise.input.Inputs
 
 fun main() {
@@ -8,7 +7,7 @@ fun main() {
     Wise.of(inputs.copy(couponFilters = emptyList()))
             .printOutput()
             .writeToFile()
-    Wise.of(inputs)
+    val withFilters = Wise.of(inputs)
             .printOutput()
-            .printPoolSortedBy(Coupon::quality, 5)
+    inputs.sorter.fold({}, { withFilters.printPoolSortedBy(it) })
 }
